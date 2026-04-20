@@ -27,6 +27,64 @@ jobs:
     - name: Run Playwright tests
       run: npx playwright test
 
+    # ✅ Generate summary from JSON report
+    - name: Generate test summary
+      id: summary
+      if: always()
+      run: |
+        if [ -f test-results/results.json ]; then
+          PASSED=$(jq '[.suites[].specs[].tests[].results[] | select(.status=="passed")] | length' test-results/results.json)
+          FAILED=$(jq '[.suites[].specs[].tests[].results[] | select(.status=="failed")] | length' test-results/results.json)
+          TOTAL=$(jq '[.suites[].specs[].tests[].results[]] | length' test-results/results.json)
+        else
+          PASSED=0
+          FAILED=0
+          TOTAL=0
+        fi
+
+        echo "passed=$PASSED" >> $GITHUB_OUTPUT
+        echo "failed=$FAILED" >> $GITHUB_OUTPUT
+        echo "total=$TOTAL" >> $GITHUB_OUTPUT
+
+    # ✅ Send email with summary
+    - name: Send email report
+      if: always()
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: Playwright Test Report - ${{ job.status }}
+        to: your-email@gmail.com
+        from: your-email@gmail.com
+        html_body: |
+          <h2>Playwright Test Summary</h2>
+
+          <p><b>Status:</b> ${{ job.status }}</p>
+
+          <table border="1" cellpadding="8" cellspacing="0">
+            <tr>
+              <th>Total</th>
+              <th>Passed</th>
+              <th>Failed</th>
+            </tr>
+            <tr>
+              <td>${{ steps.summary.outputs.total }}</td>
+              <td style="color:green;">${{ steps.summary.outputs.passed }}</td>
+              <td style="color:red;">${{ steps.summary.outputs.failed }}</td>
+            </tr>
+          </table>
+
+          <br>
+
+          <p>
+            <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">
+              View Full Report
+            </a>
+          </p>
+
+    # ✅ Upload artifacts (screenshots, report, traces)
     - name: Upload Playwright artifacts
       if: always()
       uses: actions/upload-artifact@v4
