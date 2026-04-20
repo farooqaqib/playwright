@@ -1,7 +1,7 @@
 name: Sanity
 
 on:
-  push:
+  # push:
    # branches: [ main ]
   workflow_dispatch:
 
