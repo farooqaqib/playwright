@@ -41,8 +41,8 @@ test('GET AVM ', async ({ request }) => {
     url:  currentEnv.baseURL,
     auth: {
       type: 'basic',
-      username: '8cbf504e',
-      password: 'LgXslTGttBrSqGL9Ovhv'
+    username: process.env.API_USER,
+    password: process.env.API_PASS
     },
     params: { street_address: '108 NICHOLSON DR', city: 'DAVENPORT', state: 'FL' }
     
