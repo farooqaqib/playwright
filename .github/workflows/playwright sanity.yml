@@ -4,6 +4,10 @@ on:
   # push:
    # branches: [ main ]
   workflow_dispatch:
+     env:
+        description: "Environment (qa/stage/prod)"
+        required: true
+        default: stage
 
 jobs:
   test:
@@ -25,10 +29,11 @@ jobs:
       run: npx playwright install --with-deps
 
     - name: Run Playwright tests
-      run: npm run test:stage
+      run:  npx playwright test
       env:
         API_USER: ${{ secrets.API_USER }}
         API_PASS: ${{ secrets.API_PASS }}
+        TEST_ENV: ${{ inputs.env }}
 
     # ✅ Generate summary from JSON report
     - name: Generate test summary

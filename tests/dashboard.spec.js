@@ -1,5 +1,7 @@
 // tests/dashboard/dashboard.spec.js
-/*import { test, expect } from '../fixtures/testFixtures.js';
+
+
+import { test, expect } from '../fixtures/testFixtures.js';
 
 
 test('dashboard loads correctly @regression', async ({ app }) => {
@@ -15,4 +17,4 @@ test('dashboard loads correctly @regression', async ({ app }) => {
     dashboard.getByRole('heading', { name: 'Engaged Leads' })
   ).toBeVisible();
 
-});*/
+});

@@ -1,4 +1,6 @@
 import { BasePage } from "./BasePage";
+import { currentEnv } from '../config/environments.js';
+
 
 export class LoginPage extends BasePage {
     constructor(page) {
@@ -8,7 +10,7 @@ export class LoginPage extends BasePage {
   
 
      async openLoginPage(){
-     await this.goto(('https://my.zurple.com/'))   
+     await this.goto((currentEnv.uiURL))   
      }
   
     async login(user, pass) {

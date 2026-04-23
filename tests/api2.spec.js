@@ -6,7 +6,7 @@ import { currentEnv } from '../config/environments.js';
 // ─────────────────────────────────────────────────────────────
 // BASIC AUTH
 // ─────────────────────────────────────────────────────────────
-/*test('GET AVM', async ({ request }) => {
+test('GET AVM', async ({ request }) => {
 
   const res = await apiCall({
     request,
@@ -27,6 +27,8 @@ import { currentEnv } from '../config/environments.js';
 // ─────────────────────────────────────────────────────────────
 // BEARER — static / long-lived token from env var
 // ─────────────────────────────────────────────────────────────
+
+/*
 test('GET post - bearer token (static)', async ({ request }) => {
 
   const res = await apiCall({
@@ -46,36 +48,46 @@ test('GET post - bearer token (static)', async ({ request }) => {
 // ─────────────────────────────────────────────────────────────
 // OAUTH2 — dynamic token fetch via client credentials
 // ─────────────────────────────────────────────────────────────
-/*
+
+
 test('GET post - oauth2 (dynamic token fetch)', async ({ request }) => {
+    console.log('\n--- First request (should fetch new token) ---');
 
-  const token = await getOAuth2Token(request, {
-    tokenUrl: 'https://authenticate.constellation1apis.com/oauth2/token',
-    clientId: '3ab70bbjh7htc1f88ka1mglhts',
-    clientSecret: '16lcp3jad9ru0mdrk6scemqmmdkbg0i5bfcakgnlg45vk2nngmk1',
-    scope: 'read:api',
-  });
-
-  const res = await apiCall({
+   const res = await apiCall({
     request,
     method: 'get',
     url: "https://listings.constellation1apis.com/OData/Property?$expand=Member&$top=1&$ignorenulls=true&$filter=(OriginatingSystemName eq 'CentralVirginia') and MlsStatus eq 'Active'",
-    auth: { type: 'oauth2', token }
+    auth: {
+      type: 'oauth2',
+      tokenUrl: 'https://authenticate.constellation1apis.com/oauth2/token',
+      clientId: '3ab70bbjh7htc1f88ka1mglhts',
+      clientSecret: '16lcp3jad9ru0mdrk6scemqmmdkbg0i5bfcakgnlg45vk2nngmk1',
+      scope: 'read:api'
+    }
   });
 
-  expect(res.status).toBe(200);
+    expect(res.status).toBe(200);
+});
 
 
-    const res2 = await apiCall({
+  test('GET post - oauth2 (Cached token fetch)', async ({ request }) => {
+    console.log('\n--- Second request (should fetch new token) ---');
+
+  const res2 = await apiCall({
     request,
     method: 'get',
     url: "https://listings.constellation1apis.com/OData/Property?$expand=Member&$top=2&$ignorenulls=true&$filter=(OriginatingSystemName eq 'CentralVirginia') and MlsStatus eq 'Active'",
-    auth: { type: 'oauth2', token }
-
-    
+    auth: {
+      type: 'oauth2',
+      tokenUrl: 'https://authenticate.constellation1apis.com/oauth2/token',
+      clientId: '3ab70bbjh7htc1f88ka1mglhts',
+      clientSecret: '16lcp3jad9ru0mdrk6scemqmmdkbg0i5bfcakgnlg45vk2nngmk1',
+      scope: 'read:api'
+    }
   });
+
 
   expect(res2.status).toBe(200);
 });
 
-*/
+
